@@ -1,12 +1,33 @@
-﻿namespace LibraryPatternsImpl.Books;
+﻿using LibraryPatternsImpl.Books.State;
+using LibraryPatternsImpl.Users;
 
-public class Book(int id, string title, string author, int year, string genre) : IBook
+namespace LibraryPatternsImpl.Books;
+
+public class Book : IBook
 {
-    public int Id { get; } = id;
-    public string Title { get; } = title;
-    public string Author { get; } = author;
-    public int Year { get; } = year;
-    public string Genre { get; } = genre;
+    public int Id { get; }
+    public string Title { get; }
+    public string Author { get; }
+    public int Year { get; }
+    public string Genre { get; }
 
-    public string GetInfo() => $"{Title} ({Author}), {Year}";
+    public BookState State { get; set; }
+    public IUser? Owner { get; set; }
+
+    public Book(int id, string title, string author, int year, string genre)
+    {
+        Id = id;
+        Title = title;
+        Author = author;
+        Year = year;
+        Genre = genre;
+        State = new AvailableState(this);
+    }
+
+    public string GetInfo() =>
+        $"[{Id}] {Title} by {Author} ({Year}) - {Genre} | State: {State.GetStateName()}";
+
+    public bool Borrow(IUser user) => State.Borrow(user);
+
+    public bool Return(IUser user) => State.Return(user);
 }

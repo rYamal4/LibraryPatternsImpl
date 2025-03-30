@@ -1,4 +1,7 @@
-﻿namespace LibraryPatternsImpl.Books;
+﻿using LibraryPatternsImpl.Books.State;
+using LibraryPatternsImpl.Users;
+
+namespace LibraryPatternsImpl.Books;
 
 public interface IBook
 {
@@ -7,6 +10,8 @@ public interface IBook
     string Author { get; }
     int Year { get; }
     string Genre { get; }
-
+    BookState State { get; set; }
     string GetInfo();
+    bool Borrow(IUser user);
+    bool Return(IUser user);
 }

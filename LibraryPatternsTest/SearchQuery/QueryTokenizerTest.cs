@@ -27,8 +27,8 @@ public class TokenizerTests
     [Test]
     public void Tokenize_ComplexQuery_ReturnsCorrectTokens()
     {
-        var input = "(author='Herbert' And year>=1965) Or genre='Sci-Fi'";
-        var expected = "LeftParen: '(', Author: 'author', Equal: '=', StringLiteral: 'Herbert', "
+        var input = "(author='Herbert Wells' And year>=1965) Or genre='Sci-Fi'";
+        var expected = "LeftParen: '(', Author: 'author', Equal: '=', StringLiteral: 'Herbert Wells', "
                      + "And: 'And', Year: 'year', MoreOrEqual: '>=', NumberLiteral: '1965', "
                      + "RightParen: ')', Or: 'Or', Genre: 'genre', Equal: '=', StringLiteral: 'Sci-Fi'";
 
@@ -77,13 +77,13 @@ public class TokenizerTests
     public void Tokenize_InvalidInput_ThrowsException()
     {
         var input = "title#='Invalid'";
-        Assert.Throws<InvalidOperationException>(() => _tokenizer.Tokenize(input));
+        Assert.Throws<LexicalException>(() => _tokenizer.Tokenize(input));
     }
 
     [Test]
     public void Tokenize_UnclosedString_ThrowsException()
     {
         var input = "author='Unclosed";
-        Assert.Throws<InvalidOperationException>(() => _tokenizer.Tokenize(input));
+        Assert.Throws<LexicalException>(() => _tokenizer.Tokenize(input));
     }
 }

@@ -1,66 +1,32 @@
 ﻿using LibraryPatternsImpl.Books;
+using LibraryPatternsImpl.SearchQuery.SearchExpression;
 
 namespace LibraryPatternsImpl.Catalog;
 
-public class Catalog
+public class Catalog : ICatalog
 {
-    private readonly Dictionary<int, BookStock> _books = [];
+    private readonly Dictionary<int, IBook> _books = new();
 
-    public void AddBook(int bookId, int quantity = 1)
+    public void AddBook(IBook book)
     {
-        if (_books.TryGetValue(bookId, out var stock))
-        {
-            stock.Quantity += quantity;
-        }
-        else
-        {
-            throw new InvalidOperationException($"No book with id = {bookId}");
-        }
+        if (!_books.ContainsKey(book.Id))
+            _books[book.Id] = book;
     }
 
-    public bool RemoveBook(int bookId, int quantity = 1)
+    public bool RemoveBook(int bookId)
     {
-        if (!_books.TryGetValue(bookId, out var stock)) return false;
-        stock.Quantity = stock.Quantity - quantity;
-
-        if (stock.Quantity == 0)
-        {
-            _books.Remove(bookId);
-        }
-        else if (stock.Quantity < 0)
-        {
-            throw new InvalidOperationException($"Can't remove {quantity} books from {stock.Quantity} left!");
-        }
-        return true;
+        return _books.Remove(bookId);
     }
 
-    public int GetAvailableQuantity(int bookId)
+    public List<IBook> FindBooks(string searchQuery)
     {
-        return _books.TryGetValue(bookId, out var stock) ? stock.Quantity : 0;
+        var interpreter = SearchExpressionInterpreter.Create(searchQuery);
+        var context = new Context(_books.Values.ToList());
+        return interpreter.Interpret(context);
     }
 
-    public (IBook book, int quantity)? GetBookInfo(int bookId)
-    {
-        if (_books.TryGetValue(bookId, out var stock))
-        {
-            return (stock.Book, stock.Quantity);
-        }
-        return null;
-    }
+    public List<IBook> GetAllBooks() => _books.Values.ToList();
 
-    public List<IBook> GetAllAvailableBooks()
-    {
-        return _books.Values
-            .Where(s => s.Quantity > 0)
-            .Select(s => s.Book)
-            .ToList();
-    }
-
-    public List<(IBook book, int quantity)> FindBooks(Func<IBook, bool> predicate)
-    {
-        return _books.Values
-            .Where(s => predicate(s.Book))
-            .Select(s => (s.Book, s.Quantity))
-            .ToList();
-    }
+    public IBook? GetBookById(int bookId) =>
+        _books.TryGetValue(bookId, out var book) ? book : null;
 }

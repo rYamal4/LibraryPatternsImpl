@@ -13,7 +13,7 @@ public class Tokenizer
             for (int j = 1; j < query.Length - i + 1; j++)
             {
                 var test = query[i + j - 1];
-                if (query[i + j - 1].Equals(' '))
+                if (query[i + j - 1].Equals(' ') && !query[i].Equals('\''))
                 {
                     ws = true;
                     break;
@@ -37,7 +37,7 @@ public class Tokenizer
             if (token == null && !ws)
             {
                 var test = query[i..^0];
-                throw new InvalidOperationException("Could not tokenize query");
+                throw new LexicalException("Could not tokenize query");
             }
             i = tokenEndPos;
         }
