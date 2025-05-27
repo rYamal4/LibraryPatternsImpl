@@ -4,11 +4,11 @@ namespace LibraryPatternsImpl.SearchQuery.SearchExpression;
 
 public class SearchExpressionInterpreter : AbstractExpression
 {
-    private readonly AbstractExpression _ast;
+    private readonly AbstractExpression expressionTree;
 
     private SearchExpressionInterpreter(AbstractExpression ast)
     {
-        _ast = ast ?? throw new ArgumentNullException(nameof(ast));
+        expressionTree = ast ?? throw new ArgumentNullException(nameof(ast));
     }
 
     public static SearchExpressionInterpreter Create(string query)
@@ -21,7 +21,7 @@ public class SearchExpressionInterpreter : AbstractExpression
 
     public override List<IBook> Interpret(Context context)
     {
-        return _ast.Interpret(context);
+        return expressionTree.Interpret(context);
     }
 
     private static AbstractExpression ParseTokens(List<Token> tokens)

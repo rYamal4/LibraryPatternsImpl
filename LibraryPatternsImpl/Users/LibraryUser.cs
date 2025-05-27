@@ -2,10 +2,11 @@
 
 namespace LibraryPatternsImpl.Users;
 
-public class LibraryUser(string firstName, string lastName) : IUser, ISubscriber
+public class LibraryUser(string firstName, string lastName, bool isLibrarian = false) : IUser, ISubscriber
 {
     public string FirstName { get; } = firstName;
     public string LastName { get; } = lastName;
+    public bool IsLibrarian { get; } = isLibrarian;
     public List<IBook> BorrowedBooks { get; } = [];
     public List<string> Notifications { get; } = [];
 

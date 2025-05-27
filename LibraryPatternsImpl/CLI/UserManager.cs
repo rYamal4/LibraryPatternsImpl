@@ -4,7 +4,13 @@ namespace LibraryPatternsImpl.CLI;
 
 public class UserManager
 {
-    private readonly Dictionary<string, IUser> _users = new();
+
+    public UserManager()
+    {
+        _users["rashit_yamaliev"] = new LibraryUser("Rashit", "Yamaliev", true);
+    }
+
+    private readonly Dictionary<string, IUser> _users = [];
 
     public IUser? LoginOrRegister()
     {
@@ -70,6 +76,6 @@ public class UserManager
         return newUser;
     }
 
-    private string GetKey(string? firstName, string? lastName) =>
+    private static string GetKey(string? firstName, string? lastName) =>
         $"{firstName?.ToLower()}_{lastName?.ToLower()}";
 }
